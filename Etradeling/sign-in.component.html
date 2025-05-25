@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etradeling - تسجيل الدخول</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FE7E24',
+            'light-orange': '#FFD8BB',
+            'dark-orange': '#E66A10',
+            'dark-bg': '#000000',
+            'dark-card': '#111111',
+            'dark-input': '#1A1A1A'
+          }
+        }
+      },
+      plugins: [
+        function ({ addVariant }) {
+          addVariant('dir', ({ container, separator }) => {
+            const dirRule = postcss.parse(`[dir]`);
+            dirRule.each(rule => {
+              rule.selector = `[dir] ${rule.selector}`;
+              rule.walkDecls(decl => {
+                decl.important = true;
+              });
+            });
+            container.append(dirRule);
+          });
+        }
+      ]
+    }
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* Animations */
+    @keyframes slideIn {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(10px);
+      }
+
+      75% {
+        transform: translateX(-10px);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Component Styles */
+    .form-entrance {
+      animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-error {
+      animation: shake 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .loading-spinner {
+      animation: spin 1s linear infinite;
+    }
+
+    /* Layout & Spacing */
+    .login-container {
+      padding: 2.5rem 1rem;
+
+      @media (min-width: 768px) {
+        padding: 3rem 2rem;
+      }
+
+      @media (min-width: 1024px) {
+        padding: 6rem 4rem;
+      }
+    }
+
+    /* Form Elements */
+    .form-input {
+      padding-top: 1.125rem;
+      padding-bottom: 1.125rem;
+      padding-inline-start: 3.5rem;
+      padding-inline-end: 3rem;
+    }
+
+    .form-label {
+      transition: all 0.3s;
+      top: 1rem;
+      transform: translateY(-50%);
+    }
+
+    .input-icon {
+      inset-inline-start: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .password-toggle {
+      inset-inline-end: 3.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* Dark Mode */
+    html.dark {
+      background-color: black;
+    }
+
+    .dark body {
+      background-color: black;
+    }
+
+    .dark .bg-white {
+      background-color: black;
+    }
+
+    .dark .bg-gradient-to-br {
+      background: black;
+    }
+
+    .dark .shadow-\[0_0_30px_20px_rgba\(255\,247\,237\,0\.5\)\] {
+      box-shadow: 0 0 30px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .dark img[src*="Logo-H.png"] {
+      content: url("Logo-H-DarkMode.png");
+    }
+
+    .dark .border-orange-50 {
+      border-color: rgba(255, 125, 37, 0.4);
+      background: rgba(15, 15, 15, 0.95);
+    }
+
+    .dark input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .dark input:focus {
+      background-color: rgba(255, 125, 37, 0.08);
+      border-color: #FF7D25;
+      box-shadow: 0 0 0 3px rgba(255, 125, 37, 0.15);
+    }
+
+    /* Text & Colors */
+    .dark .text-gray-800 {
+      color: rgb(243, 244, 246);
+    }
+
+    .dark .text-gray-600 {
+      color: rgb(209, 213, 219);
+    }
+
+    .dark .text-orange-600 {
+      color: #FF7D25;
+    }
+
+    .dark .text-red-600 {
+      color: #ff4444;
+      background: rgba(255, 68, 68, 0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    /* Language Support */
+    html[lang="ar"] {
+      direction: rtl;
+    }
+
+    html[lang="en"] {
+      direction: ltr;
+    }
+
+    html[lang="en"] .form-label {
+      left: 50px;
+    }
+
+    html[lang="ar"] .form-label {
+      right: 40px;
+    }
+
+    html[lang="en"] .form-label span {
+      margin-left: 24px;
+    }
+
+    html[lang="ar"] .form-label span {
+      margin-right: 24px;
+    }
+
+    html[lang="en"] #togglePassword {
+      right: 20px;
+      left: auto;
+    }
+
+    html[lang="ar"] #togglePassword {
+      left: 12px;
+      right: auto;
+    }
+
+    html[lang="ar"] .space-x-2 {
+      --tw-space-x-reverse: 1;
+    }
+
+    html[lang="en"] .space-x-2>*+* {
+      margin-left: 0.5rem;
+      margin-right: 0;
+    }
+
+    html[lang="ar"] .space-x-2>*+* {
+      margin-right: 0.5rem;
+      margin-left: 0;
+    }
+
+    /* Responsive Layout */
+    @media (min-width: 1024px) {
+      .main-container {
+        flex-direction: row-reverse;
+      }
+
+      [dir="rtl"] .main-container {
+        flex-direction: row-reverse;
+      }
+
+      [dir="ltr"] .main-container {
+        flex-direction: row;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .login-container::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        left: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 70%;
+        width: 1px;
+        background-color: #FF7D25;
+        z-index: 30;
+      }
+
+      [dir="ltr"] .login-container::before {
+        left: 0;
+        right: auto;
+      }
+
+      [dir="rtl"] .login-container::before {
+        left: 0;
+        right: auto;
+      }
+
+      .dark .login-container::before {
+        background-color: #FF7D25;
+        opacity: 0.8;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 font-[Tajawal] relative overflow-hidden transition-colors duration-300">
+  <!-- Navigation -->
+  <a href="/LandingPage2.html" class="home-link fixed top-4 ltr:right-4 rtl:left-4 z-20 flex items-center gap-2 px-4 py-2 
+            text-gray-700 hover:text-orange-600 dark:text-gray-300 dark:hover:text-[#FF7D25]
+            transition-colors duration-300 bg-white/80 dark:bg-black/80 
+            backdrop-blur-sm rounded-lg shadow-md hover:shadow-lg group">
+    <i class="fas fa-home text-lg group-hover:scale-110 transition-transform"></i>
+    <span class="font-medium">الرئيسية</span>
+  </a>
+
+  <!-- Login Container -->
+  <div class="min-h-screen flex flex-row relative z-10 main-container">
+    <!-- Right Section - Login Form -->
+    <div class="login-container order-last w-full lg:w-1/2 flex flex-col items-center justify-center p-4 md:p-8 lg:p-16
+            bg-white dark:bg-black shadow-[0_0_30px_20px_rgba(255,247,237,0.5)]
+            dark:shadow-[0_0_30px_20px_rgba(0,0,0,0.3)] transition-colors duration-300 relative">
+
+      <!-- Desktop Welcome -->
+      <div class="hidden lg:block w-full max-w-md text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-3">
+          <span class="welcome-text bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
+            أهلاً وسهلاً بك
+          </span>
+        </h1>
+        <p class="welcome-subtext text-base text-gray-600 dark:text-gray-300">
+          نحن سعداء برؤيتك مرة أخرى. دعنا نساعدك في الوصول إلى حسابك
+        </p>
+      </div>
+
+      <div class="w-full max-w-md space-y-6 form-entrance">
+        <!-- Mobile Header -->
+        <div class="text-center space-y-3 lg:hidden">
+          <a href="/LandingPage2.html">
+            <img src="Logo-H.png" alt="Etradeling Logo"
+              class="mx-auto h-24 w-auto transform transition-transform hover:scale-105">
+          </a>
+          <div class="space-y-1">
+            <h2
+              class="welcome-mobile text-xl font-bold text-gray-900 dark:text-gray-100 bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
+              مرحباً بك في عالم الأعمال
+            </h2>
+            <p class="welcome-mobile-subtext text-xs text-gray-600 dark:text-gray-400">
+              سجل دخولك للوصول إلى فرص تجارية جديدة
+            </p>
+          </div>
+        </div>
+
+        <!-- Login Form -->
+        <form class="bg-white dark:bg-black rounded-2xl shadow-[0_0_25px_25px_rgba(255,247,237,0.5)] 
+                   dark:shadow-[0_0_25px_25px_rgba(0,0,0,0.2)] border border-orange-50 dark:border-gray-700 
+                   p-6 space-y-4 backdrop-blur-sm bg-opacity-90 transition-shadow duration-300" id="loginForm"
+          novalidate>
+
+          <!-- Email Input -->
+          <div class="relative" onclick="document.getElementById('email').focus();" style="cursor: text;">
+            <input type="email" id="email" name="email" required class="w-full px-4 py-3 pl-10 pr-12 border-2 border-gray-200 dark:border-[#FF7D25] rounded-xl
+                          focus:border-orange-500 focus:ring-2 focus:ring-orange-200/50 dark:focus:ring-[#FF7D25]
+                          peer pt-6 bg-transparent dark:text-gray-100" placeholder=" ">
+            <label for="email" class="form-label absolute text-gray-500 dark:text-gray-400 transition-all duration-300
+                          transform -translate-y-3 scale-75 top-4 peer-focus:text-orange-600 
+                          peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
+                          peer-focus:scale-75 peer-focus:-translate-y-3 bg-transparent cursor-text">
+              <span class="ml-6">البريد الإلكتروني</span>
+            </label>
+            <i
+              class="input-icon fas fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"></i>
+            <p class="text-red-600 text-sm mt-2 hidden" id="emailError"></p>
+          </div>
+
+          <!-- Password Input -->
+          <div class="relative" onclick="document.getElementById('password').focus();" style="cursor: text;">
+            <input type="password" id="password" name="password" required class="w-full px-4 py-3 pl-10 pr-12 border-2 border-gray-200 dark:border-[#FF7D25] rounded-xl
+                          focus:border-orange-500 focus:ring-2 focus:ring-orange-200/50 dark:focus:ring-[#FF7D25]
+                          peer pt-6 bg-transparent dark:text-gray-100" placeholder=" ">
+            <label for="password" class="form-label absolute text-gray-500 dark:text-gray-400 transition-all duration-300
+                          transform -translate-y-3 scale-75 top-4 peer-focus:text-orange-600 
+                          peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
+                          peer-focus:scale-75 peer-focus:-translate-y-3 bg-transparent cursor-text">
+              <span class="ml-6">كلمة المرور</span>
+            </label>
+            <i
+              class="input-icon fas fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"></i>
+            <button type="button" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500 
+                           dark:text-gray-500 dark:hover:text-[#FF7D25] z-10 p-1" id="togglePassword"
+              aria-label="Show/Hide Password" title="Show/Hide Password">
+              <i class="fas fa-eye-slash" aria-hidden="true"></i>
+            </button>
+            <p class="text-red-600 text-sm mt-2 hidden" id="passwordError"></p>
+          </div>
+
+          <!-- Remember & Forgot -->
+          <div class="flex items-center justify-between px-1">
+            <label class="flex items-center cursor-pointer group">
+              <input type="checkbox" id="rememberMe" class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 dark:border-gray-600 rounded
+                            group-hover:border-orange-500 transition-colors">
+              <span class="remember-me-text text-sm text-gray-600 dark:text-gray-400 mx-3 group-hover:text-orange-600 
+                           dark:group-hover:text-[#FF7D25] transition-colors">تذكرني</span>
+            </label>
+            <a href="forgot-password.component.html" class="forgot-password-link text-sm font-medium text-orange-600 hover:text-orange-500 
+                      dark:text-[#FF7D25] dark:hover:text-[#ff6a00] transition-colors">
+              نسيت كلمة المرور؟
+            </a>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="w-full py-3.5 px-6 bg-[#FF7D25] hover:bg-[#FF6A00] text-white rounded-xl 
+          font-medium shadow-lg hover:shadow-orange-200/40 dark:hover:shadow-[#FF7D25]/30 
+          transition-all duration-300 relative overflow-hidden group">
+            <span class="relative z-10 flex items-center justify-center gap-2">
+              <span id="buttonText">تسجيل الدخول</span>
+              <i class="fas fa-sign-in-alt group-hover:translate-x-1 transition-transform"></i>
+              <!-- Add loading spinner -->
+              <div id="loadingSpinner" class="hidden">
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                  </path>
+                </svg>
+              </div>
+            </span>
+          </button>
+
+          <!-- Sign Up Link -->
+          <div class="text-center text-sm pt-4 border-t border-gray-100 dark:border-gray-700">
+            <p class="text-gray-600 dark:text-gray-400">
+              <span class="no-account-text">ليس لديك حساب؟</span>
+              <a href="sign-up.component.html"
+                class="create-account-link text-orange-600 hover:text-orange-700 dark:text-[#FF7D25] dark:hover:text-[#FF6A00] font-medium transition-colors">
+                إنشاء حساب جديد
+              </a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Left Section - Branding -->
+    <div class="hidden lg:flex order-first w-1/2 bg-gradient-to-br from-orange-50 to-amber-50 
+            dark:from-black dark:to-black p-12 items-center justify-center relative 
+            overflow-hidden shadow-[20px_0_30px_rgba(0,0,0,0.03)]">
+      <div class="relative text-center space-y-6">
+        <a href="/LandingPage2.html">
+          <img src="Logo-H.png" alt="Etradeling Logo"
+            class="w-48 mx-auto mb-6 transform transition-transform hover:scale-105">
+        </a>
+        <h1 class="branding-title text-3xl font-bold text-gray-800 dark:text-gray-100 mb-3">نربط الصناعة بالفرص</h1>
+        <p class="branding-subtext text-lg text-gray-600 dark:text-gray-300 max-w-md mx-auto">
+          منصة مبتكرة تجمع الخبرات الصناعية والفرص التجارية في مكان واحد
+        </p>
+        <div class="mt-8 space-y-3 ltr:text-left rtl:text-right">
+          <div class="flex items-center justify-center gap-3 text-gray-700 dark:text-gray-400">
+            <i class="fas fa-handshake text-orange-500"></i>
+            <span class="feature-1 text-sm">تواصل مباشر بين المصانع والعملاء</span>
+          </div>
+          <div class="flex items-center justify-center gap-3 text-gray-700 dark:text-gray-400">
+            <i class="fas fa-industry text-orange-500"></i>
+            <span class="feature-2 text-sm">فرص تجارية وخدمات صناعية متنوعة</span>
+          </div>
+          <div class="flex items-center justify-center gap-3 text-gray-700 dark:text-gray-400">
+            <i class="fas fa-shield-alt text-orange-500"></i>
+            <span class="feature-3 text-sm">منصة آمنة لتبادل العروض والخدمات</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Language and Theme Management
+    const translations = {
+      en: {
+        title: "Sign In",
+        home: "Home",
+        welcome: "Welcome Back",
+        welcomeSubtext: "We're happy to see you again. Let's help you access your account",
+        welcomeMobile: "Welcome to Business World",
+        welcomeMobileSubtext: "Sign in to access new business opportunities",
+        email: "Email Address",
+        password: "Password",
+        showHidePassword: "Show/Hide Password",
+        rememberMe: "Remember me",
+        forgotPassword: "Forgot Password?",
+        signIn: "Sign In",
+        noAccount: "Don't have an account?",
+        createAccount: "Create New Account",
+        brandingTitle: "Connecting Industry with Opportunities",
+        brandingSubtext: "An innovative platform bringing together industrial expertise and business opportunities in one place",
+        feature1: "Direct connection between factories and clients",
+        feature2: "Diverse business opportunities and industrial services",
+        feature3: "Secure platform for exchanging offers and services",
+        emailError: "Please enter a valid email address",
+        passwordError: "Please enter your password"
+      },
+      ar: {
+        title: "تسجيل الدخول",
+        home: "الرئيسية",
+        welcome: "أهلاً وسهلاً بك",
+        welcomeSubtext: "نحن سعداء برؤيتك مرة أخرى. دعنا نساعدك في الوصول إلى حسابك",
+        welcomeMobile: "مرحباً بك في عالم الأعمال",
+        welcomeMobileSubtext: "سجل دخولك للوصول إلى فرص تجارية جديدة",
+        email: "البريد الإلكتروني",
+        password: "كلمة المرور",
+        showHidePassword: "عرض/إخفاء كلمة المرور",
+        rememberMe: "تذكرني",
+        forgotPassword: "نسيت كلمة المرور؟",
+        signIn: "تسجيل الدخول",
+        noAccount: "ليس لديك حساب؟",
+        createAccount: "إنشاء حساب جديد",
+        brandingTitle: "نربط الصناعة بالفرص",
+        brandingSubtext: "منصة مبتكرة تجمع الخبرات الصناعية والفرص التجارية في مكان واحد",
+        feature1: "تواصل مباشر بين المصانع والعملاء",
+        feature2: "فرص تجارية وخدمات صناعية متنوعة",
+        feature3: "منصة آمنة لتبادل العروض والخدمات",
+        emailError: "الرجاء إدخال بريد إلكتروني صحيح",
+        passwordError: "الرجاء إدخال كلمة المرور"
+      }
+    };
+
+    // Dark Mode Initialization based on localStorage only
+    function initializeTheme() {
+      const storedTheme = localStorage.getItem('color-theme');
+      const html = document.documentElement;
+
+      // Remove any existing theme classes
+      html.classList.remove('dark', 'light');
+
+      // Apply the stored theme or default to light
+      if (storedTheme === 'dark') {
+        html.classList.add('dark');
+      } else {
+        html.classList.add('light');
+      }
+    }
+
+    // Initialize theme immediately
+    initializeTheme();
+
+    // Also initialize when DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', initializeTheme);
+
+    // Initialize language and theme
+    function initializeLanguageAndTheme() {
+      const storedLang = localStorage.getItem('language') || 'ar';
+      const storedTheme = localStorage.getItem('color-theme');
+      const html = document.documentElement;
+
+      // Set language
+      html.setAttribute('lang', storedLang);
+      html.setAttribute('dir', storedLang === 'ar' ? 'rtl' : 'ltr');
+      document.title = `Etradeling - ${translations[storedLang].title}`;
+
+      // Apply theme
+      html.classList.remove('dark', 'light');
+      html.classList.add(storedTheme === 'dark' ? 'dark' : 'light');
+
+      // Update all translatable elements
+      updatePageLanguage(storedLang);
+    }
+
+    function updatePageLanguage(lang) {
+      const t = translations[lang];
+      const html = document.documentElement;
+
+      // Update text content
+      document.querySelector('.home-link span').textContent = t.home;
+      document.querySelector('.welcome-text').textContent = t.welcome;
+      document.querySelector('.welcome-subtext').textContent = t.welcomeSubtext;
+      document.querySelector('.welcome-mobile').textContent = t.welcomeMobile;
+      document.querySelector('.welcome-mobile-subtext').textContent = t.welcomeMobileSubtext;
+      document.querySelector('label[for="email"]').textContent = t.email;
+      document.querySelector('label[for="password"]').textContent = t.password;
+      document.querySelector('#togglePassword').setAttribute('title', t.showHidePassword);
+      document.querySelector('#togglePassword').setAttribute('aria-label', t.showHidePassword);
+      document.querySelector('.remember-me-text').textContent = t.rememberMe;
+      document.querySelector('.forgot-password-link').textContent = t.forgotPassword;
+      document.querySelector('#buttonText').textContent = t.signIn;
+      document.querySelector('.no-account-text').textContent = t.noAccount;
+      document.querySelector('.create-account-link').textContent = t.createAccount;
+      document.querySelector('.branding-title').textContent = t.brandingTitle;
+      document.querySelector('.branding-subtext').textContent = t.brandingSubtext;
+      document.querySelector('.feature-1').textContent = t.feature1;
+      document.querySelector('.feature-2').textContent = t.feature2;
+      document.querySelector('.feature-3').textContent = t.feature3;
+
+      // Update document direction
+      html.setAttribute('lang', lang);
+      document.title = `Etradeling - ${t.title}`;
+    }
+
+    // Initialize immediately and on DOM load
+    initializeLanguageAndTheme();
+    document.addEventListener('DOMContentLoaded', initializeLanguageAndTheme);
+
+    // Update form validation messages
+    function showError(element, message) {
+      const lang = document.documentElement.lang;
+      element.textContent = translations[lang][message];
+      element.classList.remove('hidden');
+      element.parentElement.classList.add('form-error');
+      setTimeout(() => {
+        element.parentElement.classList.remove('form-error');
+      }, 500);
+    }
+
+    // Toggle Password Visibility
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+
+    togglePassword.addEventListener('click', function () {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+      this.querySelector('i').classList.toggle('fa-eye');
+    });
+
+    // Form Validation
+    const form = document.getElementById('loginForm');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const submitBtn = document.getElementById('submitBtn');
+    const buttonText = document.getElementById('buttonText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitButton = form.querySelector('button[type="submit"]');
+
+      // Show loading state
+      submitButton.disabled = true;
+      buttonText.classList.add('opacity-0');
+      loadingSpinner.classList.remove('hidden');
+
+      // Simulate API call
+      setTimeout(() => {
+        // Reset loading state
+        submitButton.disabled = false;
+        buttonText.classList.remove('opacity-0');
+        loadingSpinner.classList.add('hidden');
+
+        // Basic validation
+        if (!validateEmail(document.getElementById('email').value)) {
+          showError(emailError, 'الرجاء إدخال بريد إلكتروني صحيح');
+          return;
+        }
+
+        if (document.getElementById('password').value.length === 0) {
+          showError(passwordError, 'الرجاء إدخال كلمة المرور');
+          return;
+        }
+
+        form.querySelector('button').disabled = false;
+        // If validation passes
+        window.location.href = '/dashboard';
+      }, 1500);
+    });
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+  </script>
+</body>
+
+</html>
